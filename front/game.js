@@ -11,6 +11,6 @@ require(["game/board", "game/piece"], function (Board, Piece) {
     var ChessBoard = new Board(8, 8);
 
     ChessBoard.pieces.push(new Piece("queen"));
-
+    ChessBoard.setup();
     window.board = ChessBoard;
 });

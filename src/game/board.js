@@ -4,8 +4,7 @@ define(function (require) {
     var Graph   = require("graph/graph"),
         map     = require("game/map"),
         invert  = require("util/invert"),
-        Piece   = require("game/piece"),
-        setup   = require("game/setup");
+        Piece   = require("game/piece");
 
 
     function Board(width, length) {
@@ -26,10 +25,10 @@ define(function (require) {
         return this.invertMap[code];
     };
 
-    Board.prototype.setup = function () {
+    Board.prototype.setup = function (map) {
         var i;
-        for (i in setup) {
-            this.pieces.push(new Piece(i, this.toIndex(setup[i])));
+        for (i in map) {
+            this.pieces.push(new Piece(i, this.toIndex(map[i])));
         }
     };
 

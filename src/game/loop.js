@@ -1,7 +1,3 @@
-/*
-    Master game loop
-*/
-
 define(["shims/requestAnimFrame"], function (requestAnimFrame) {
 
     function Loop(game, render) {
@@ -14,18 +10,18 @@ define(["shims/requestAnimFrame"], function (requestAnimFrame) {
 
         function frame() {
 
-            // Temporal Entities
+            // Temporal properties
             now = new Date().getTime();
             dt = Math.min(1, (now - last) / 1000);
 
-            // Game Update
+            // Game update
             gdt += dt;
             while (gdt > game.step) {
                 gdt -= game.step;
                 game.update(dt);
             }
 
-            // Render Update
+            // Render update
             rdt += dt;
             if (rdt > render.step) {
                 rdt -= render.step;

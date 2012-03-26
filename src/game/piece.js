@@ -1,8 +1,10 @@
-define(["game/movement"], function (movement) {
+define(function (require) {
 
-    function Piece(type, position) {
+    var movement = require("data/piece_movement");
+
+    function Piece(type, color, position) {
         this.type = type;
-        this.movement = movement[type];
+        this.color = color;
         this.position = position;
     }
 

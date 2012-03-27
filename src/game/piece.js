@@ -6,6 +6,7 @@ define(function (require) {
         this.type = type;
         this.color = color;
         this.position = position;
+        this.movement = movement[this.type];
     }
 
     return Piece;

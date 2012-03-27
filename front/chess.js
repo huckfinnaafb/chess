@@ -7,10 +7,26 @@ require.config({
     waitSeconds: 15
 });
 
-require(["game/game", "render/camera", "game/loop"], function (Game, Camera, loop) {
+require(["game/game"], function (Game) {
 
-    var chess = new Game(),
-        renderer = new Camera("chess", chess);
+    var chess;
 
-    loop(chess, renderer);
+    // Instantiate
+    chess = new Game("chess");
+
+    // Configuration
+    chess.config({
+        fps: 25
+    });
+
+    // Load assets
+    chess.preload();
+
+    // Setup game
+    chess.init();
+
+    // Start round
+    chess.play();
+
+    window.chess = chess;
 });

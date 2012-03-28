@@ -83,17 +83,17 @@ define(function () {
     };
 
     // Useful for offsets
-    Vec2.N    = new Vec2(0, -1);
-    Vec2.W    = new Vec2(-1, 0);
-    Vec2.S    = new Vec2(0, 1);
-    Vec2.E    = new Vec2(1, 0);
+    Vec2.N    = new Vec2( 0, -1);
+    Vec2.W    = new Vec2(-1,  0);
+    Vec2.S    = new Vec2( 0,  1);
+    Vec2.E    = new Vec2( 1,  0);
     Vec2.NW   = new Vec2(-1, -1);
-    Vec2.NE   = new Vec2(1, -1);
-    Vec2.SW   = new Vec2(-1, 1);
-    Vec2.SE   = new Vec2(1, 1);
-    Vec2.i    = new Vec2(0, 1);
-    Vec2.one  = new Vec2(1, 0);
-    Vec2.zero = new Vec2(0, 0);
+    Vec2.NE   = new Vec2( 1, -1);
+    Vec2.SW   = new Vec2(-1,  1);
+    Vec2.SE   = new Vec2( 1,  1);
+    Vec2.i    = new Vec2( 0,  1);
+    Vec2.one  = new Vec2( 1,  0);
+    Vec2.zero = new Vec2( 0,  0);
 
     return Vec2;
 });

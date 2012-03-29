@@ -23,81 +23,47 @@ define(function (require) {
         this.pieces = [];
     }
 
-    // Inherit from graph prototype
     Board.prototype = Object.create(Graph.prototype);
 
-
-
-    // Create a new piece
     Board.prototype.create = function (type, color, position) {
         return this.add(new Piece(type, color, position));
     };
 
-    // Append piece
     Board.prototype.add = function (piece) {
         this.pieces[piece.position] = piece;
     };
 
-    // Fetch one
     Board.prototype.find = function (index) {
         return this.pieces[index];
     };
 
-    Board.prototype.findByType = function (type) {
-
-    };
-
-    // All pieces capable of being captured
-    Board.prototype.threatened = function () {
-
-    };
-
-    // All pieces capable of making a capture
-    Board.prototype.threatens = function () {
-
-    };
-
-    // Is currently threatened by any enemy
-    Board.prototype.isThreatened = function (index) {
-
-    };
-
-    // Is currently threatening any enemy
-    Board.prototype.isThreatening = function (index) {
-
-    };
-
-    // Fetch all
     Board.prototype.all = function () {
         return this.pieces;
     };
 
-    // Move piece
     Board.prototype.move = function (from, to) {
-        var piece = this.find(from);
-        this.remove(from);
-        piece.position = to;
-        this.add(piece);
+        if (this.occupied(from)) {
+            var piece = this.find(from);
+            this.remove(from);
+            piece.position = to;
+            this.add(piece);
+        }
     };
 
-    // Remove piece from the board
     Board.prototype.remove = function (index) {
         this.pieces[index] = undefined;
     };
 
-    // Convert index to code
     Board.prototype.toCode = function (index) {
         return board_map[index];
     };
 
-    // Convert code to index
     Board.prototype.fromCode = function (code) {
         return board_map_invert[code];
     };
 
-    // Index contains piece
     Board.prototype.occupied = function (index) {
-        return this.isPiece(this.find(index));
+        return !!this.find(index);
     };
 
     // Is a valid Chess piece
@@ -113,7 +79,7 @@ define(function (require) {
         }
     };
 
-    // Generate legal piece moves
+    // Generate legal moves
     Board.prototype.getMoves = function (piece) {
         var offsets  = piece.movement.offsets,
             distance = piece.movement.distance,
@@ -139,7 +105,7 @@ define(function (require) {
         return moves;
     };
 
-    Board.prototype._buildInverted = function (map) {
+    Board.prototype._buildInvertMap = function (map) {
         var i;
         for (i in map) {
             document.write("\"" + map[i] + "\": " + i + ", ");

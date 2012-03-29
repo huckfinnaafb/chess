@@ -1,6 +1,6 @@
 define(function (require) {
 
-    var pieceSpriteMap = require("data/sprite_pieces");
+    var pieceSpriteMap = require("piece/sprite_map");
 
     function Camera(canvas, game) {
         this.canvas = canvas;

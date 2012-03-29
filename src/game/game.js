@@ -1,11 +1,11 @@
 define(function (require) {
 
-    var Board  = require("game/board"),
+    var Board  = require("board/board"),
         Camera = require("render/camera"),
         loop   = require("game/loop"),
 
-        white  = require("data/setup_white"),
-        black  = require("data/setup_black");
+        white  = require("data/white"),
+        black  = require("data/black");
 
     function Game() {
         this.fps = undefined;

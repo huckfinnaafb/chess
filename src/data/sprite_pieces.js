@@ -47,10 +47,10 @@ define(["image/pieces"], function (image) {
                 this.size,
 
                 // Destination X Offset
-                position.x * this.size,
+                (position.x - 1) * this.size,
 
                 // Destination Y Offset
-                position.y * this.size,
+                (position.y - 2) * this.size,
 
                 // Destination width
                 this.size,

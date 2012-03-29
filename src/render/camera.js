@@ -17,12 +17,20 @@ define(function (require) {
     };
 
     Camera.prototype.draw = function (dt) {
+
+        this.ctx.clearRect(0, 0, 480, 480);
         this.all(this.game.board.pieces);
     };
 
     Camera.prototype.all = function (pieces) {
         var i;
         for (i = 0; i < pieces.length; i += 1) {
+            var piece = pieces[i];
+
+            if (typeof piece == 'undefined') {
+                continue;
+            }
+
             this.piece(pieces[i]);
         }
     };

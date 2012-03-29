@@ -9,7 +9,7 @@ define(["graph/node", "graph/vec2"], function (Node, Vec2) {
         // Dimensions
         this.width = width;
         this.length = length;
-        
+
         // Nodes
         this.nodes = new Array(width * length);
 

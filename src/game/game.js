@@ -2,7 +2,7 @@ define(function (require) {
 
     var Board  = require("game/board"),
         Camera = require("render/camera"),
-        loop = require("game/loop"),
+        loop   = require("game/loop"),
 
         white  = require("data/setup_white"),
         black  = require("data/setup_black");

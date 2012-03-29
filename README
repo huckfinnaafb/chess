@@ -1,1 +1,15 @@
 It's Chess. Deal with it.
+
+Board Representation
+10x12 Single Dimensionsal Indexed Array
+
+---------------------------------------------
+
+Built using Javascript and HTML5's Canvas
+https://developer.mozilla.org/en/JavaScript
+
+RequireJS
+http://requirejs.org/
+
+UnderscoreJS
+http://documentcloud.github.com/underscore/

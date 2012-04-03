@@ -1,116 +1,119 @@
 /*
-    r k b k q b k r
-    p p p p p p p p
-    x x x x x x x x
-    x x x x x x x x
-    x x x x x x x x
-    x x x x x x x x
-    p p p p p p p p
-    r k b k q b k r
+    Representation (10 x 12 Single Dimensional Indexed Array)
+
+    # # # # # # # # # #   # : illegal
+    # # # # # # # # # #   - : open
+    # r n b q k b n r #
+    # p p p p p p p p #   r : rook
+    # - - - - - - - - #   n : knight
+    # - - - - - - - - #   b : bishop
+    # - - - - - - - - #   q : queen
+    # - - - - - - - - #   k : king
+    # p p p p p p p p #   p : pawn
+    # r n b q k b n r #
+    # # # # # # # # # #
+    # # # # # # # # # #
 */
 define(function (require) {
+    var Piece       = require("piece/piece"),
+        map         = require("board/map"),
+        map_invert  = require("board/map_invert"),
+        illegal     = require("board/illegal"),
+        initWhite   = require("data/white"),
+        initBlack   = require("data/black"),
+        movement    = require("piece/movement");
 
-    // Dependencies
-    var Graph               = require("graph/graph"),
-        Piece               = require("piece/piece"),
+    // Board representation
+    var pieces = new Array(120);
 
-        board_map           = require("board/map"),
-        board_map_invert    = require("board/map_invert"),
-        board_map_illegal   = require("board/illegal");
-
-    function Board() {
-        Graph.call(this, 10, 12);
-        this.pieces = [];
+    // Helpers
+    function toCode(index) {
+        return map[index];
     }
 
-    Board.prototype = Object.create(Graph.prototype);
+    function toIndex(code) {
+        return map_invert[code];
+    }
 
-    Board.prototype.create = function (type, color, position) {
-        return this.add(new Piece(type, color, position));
-    };
+    // Board
+    var Board = {
+        width: 10,
+        height: 12,
 
-    Board.prototype.add = function (piece) {
-        this.pieces[piece.position] = piece;
-    };
+        init: function () {
+            this.setup(initWhite, "white");
+            this.setup(initBlack, "black");
+        },
 
-    Board.prototype.find = function (index) {
-        return this.pieces[index];
-    };
+        setup: function (map, color) {
+            var i;
+            for (i in map) {
+                this.add(map[i], color, i);
+            }
+        },
 
-    Board.prototype.all = function () {
-        return this.pieces;
-    };
+        all: function () {
+            return pieces;
+        },
 
-    Board.prototype.move = function (from, to) {
-        if (this.isOccupied(from)) {
-            var piece = this.find(from);
-            this.remove(from);
-            piece.position = to;
-            this.add(piece);
-        }
-    };
+        add: function (type, color, code) {
+            this.append(new Piece(
+                type,
+                color,
+                toIndex(code)
+            ), toIndex(code));
+        },
 
-    Board.prototype.remove = function (index) {
-        this.pieces[index] = undefined;
-    };
+        append: function (piece, index) {
+            pieces[index] = piece;
+        },
 
-    Board.prototype.toCode = function (index) {
-        return board_map[index];
-    };
+        find: function (index) {
+            return pieces[index];
+        },
 
-    Board.prototype.fromCode = function (code) {
-        return board_map_invert[code];
-    };
+        legal: function (piece) {
+            var offsets     = movement[piece.type].offsets,
+                distance    = movement[piece.type].distance,
+                origin      = piece.position,
+                threatens   = [],
+                potential   = [],
+                current, i, j;
 
-    Board.prototype.isOccupied = function (index) {
-        return !!this.find(index);
-    };
+            // Loop through each offsets
+            for (i = 0; i < offsets.length; i += 1) {
 
-    // Is a valid Chess piece
-    Board.prototype.isPiece = function (piece) {
-        return (typeof piece !== 'undefined');
-    };
+                // Reset current pointer
+                current = origin + offsets[i];
 
-    // Map pieces to the board
-    Board.prototype.setup = function (map, color) {
-        var i;
-        for (i in map) {
-            this.create(map[i], color, this.fromCode(i));
-        }
-    };
+                // Repeat offset (Infinity or 1)
+                for (j = 0; j < distance; j += 1) {
+                    var found = this.find(current);
 
-    // Generate legal moves
-    Board.prototype.getMoves = function (piece) {
-        var offsets  = piece.movement.offsets,
-            distance = piece.movement.distance,
-            origin   = piece.position,
-            current  = null,
-            moves    = [],
-            i, j;
+                    // Is illegal move
+                    if (_.include(illegal, current)) {
+                        break;
+                    }
 
-        for (i = 0; i < offsets.length; i += 1) {
-            current = origin + offsets[i];
-            for (j = 0; j < distance; j += 1) {
-                if (_.include(board_map_illegal, current)) {
-                    break;
-                } else if (this.isOccupied(current)) {
-                    break;
-                } else {
-                    moves.push(current);
-                    current += offsets[i];
+                    // Enemy index
+                    if (typeof found !== 'undefined') {
+                        if (found.color == piece.enemy()) {
+                            threatens.push(current);
+                        }
+                    }
+
+                    // Empty index
+                    if (typeof found === 'undefined') {
+
+                    }
+
                 }
             }
         }
-
-        return moves;
     };
 
-    Board.prototype._buildInvertMap = function (map) {
-        var i;
-        for (i in map) {
-            document.write("\"" + map[i] + "\": " + i + ", ");
-        }
-    };
+    // Initialize
+    Board.init();
 
     return Board;
 });

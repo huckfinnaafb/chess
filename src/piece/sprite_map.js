@@ -29,7 +29,7 @@ define(["piece/sprite"], function (sprite) {
             @return ctx.drawImage return value
         */
         draw: function (ctx, piece, position) {
-            return ctx.drawImage(
+            ctx.drawImage(
 
                 // Image object
                 sprite,

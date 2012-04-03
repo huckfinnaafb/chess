@@ -1,45 +1,90 @@
 define(function (require) {
 
-    var pieceSpriteMap = require("piece/sprite_map");
+    var game     = require("game/chess"),
+        board    = require("board/board"),
+        pieceMap = require("piece/sprite_map"),
+        Graph    = require("graph/graph"),
+        pieces   = board.getPieces();
 
-    function Camera(canvas, game) {
-        this.canvas = canvas;
-        this.game = game;
-        this.fps = 25;
-        this.step = 1 / 25;
-        this.pieceSize = 80;
+    return {
+        canvas  : undefined,
+        ctx     : undefined,
+        fps     : 25,
+        step    : 1 / 25,
+        frame   : 0,
 
-        this.ctx = document.getElementById(canvas).getContext("2d");
-    }
+        init: function (canvasID) {
+            this.canvas = canvasID;
+            this.ctx = document.getElementById(canvasID).getContext('2d');
+        },
 
-    Camera.prototype.update = function (dt) {
-        this.draw(dt);
-    };
+        getCanvas: function () {
+            return this.canvas;
+        },
 
-    Camera.prototype.draw = function (dt) {
+        getContext: function () {
+            return this.ctx;
+        },
 
-        this.ctx.clearRect(0, 0, 480, 480);
-        this.all(this.game.board.pieces);
-    };
+        getFps: function () {
+            return this.fps;
+        },
 
-    Camera.prototype.all = function (pieces) {
-        var i;
-        for (i = 0; i < pieces.length; i += 1) {
-            var piece = pieces[i];
+        getStep: function () {
+            return this.step;
+        },
 
-            if (typeof piece == 'undefined') {
-                continue;
+        getFrame: function () {
+            return this.frame;
+        },
+
+        setCanvas: function (canvas) {
+            this.canvas = canvas;
+        },
+
+        setContext: function (context) {
+            this.ctx = context;
+        },
+
+        setStep: function (step) {
+            this.step = step;
+        },
+
+        setFrame: function (frame) {
+            this.frame = frame;
+        },
+
+        update: function (dt) {
+            this.setFrame(this.getFrame() + 1);
+            this.draw(dt);
+        },
+
+        draw: function (dt) {
+            var i;
+            for (i = 0; i < pieces.length; i += 1) {
+                if (typeof pieces[i] === 'undefined') {
+                    continue;
+                }
+
+                this.piece(pieces[i]);
             }
+        },
 
-            this.piece(pieces[i]);
+        piece: function (piece) {
+            pieceMap.draw(
+
+                // Context
+                this.getContext(),
+
+                // Piece
+                piece,
+
+                // Vector
+                Graph.toVec2(
+                    piece.getPosition(),
+                    board.getWidth()
+                )
+            );
         }
     };
-
-    // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-    Camera.prototype.piece = function (piece) {
-        var position = this.game.board.toVec2(piece.position);
-        return pieceSpriteMap.draw(this.ctx, piece, position);
-    };
-
-    return Camera;
 });

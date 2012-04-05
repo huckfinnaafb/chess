@@ -1,31 +1,80 @@
-define({
-    "King": {
-        distance: 1,
-        offsets: [1, -1, 10, -10]
-    },
+define(["board/config"], function (config) {
+    var rank = config.width,
+        file = 1;
 
-    "Rook": {
-        distance: Infinity,
-        offsets: [1, -1,  10, -10]
-    },
+    var Movement = {
+        "King": {
+            distance: 1,
+            offsets: [
+                 file,
+                 rank,
+                -file,
+                -rank
+            ]
+        },
 
-    "Bishop": {
-        distance: Infinity,
-        offsets: [-11, 11, 9, -9]
-    },
+        "Rook": {
+            distance: Infinity,
+            offsets: [
+                 file,
+                 rank,
+                -file,
+                -rank
+            ]
+        },
 
-    "Queen": {
-        distance: Infinity,
-        offsets: [1, -1, 10, -10, -11, 11, 9, -9]
-    },
+        "Bishop": {
+            distance: Infinity,
+            offsets: [
+                 rank + file,
+                 rank - file,
+                -rank + file,
+                -rank - file
+            ]
+        },
 
-    "Knight": {
-        distance: 1,
-        offsets: [12, -12, 8, -8, 21, -21, 19, -19]
-    },
+        "Queen": {
+            distance: Infinity,
+            offsets: [
+                 file,
+                 rank,
+                -file,
+                -rank,
+                 rank + file,
+                 rank - file,
+                -rank + file,
+                -rank - file
+            ]
+        },
 
-    "Pawn": {
-        distance: 1,
-        offsets: [-10, 10]
-    }
+        "Knight": {
+            distance: 1,
+            offsets: [
+                  rank + (file * 2),
+                  rank - (file * 2),
+                 -rank - (file * 2),
+                 -rank + (file * 2),
+                ( rank * 2) + file,
+                ( rank * 2) - file,
+                (-rank * 2) - file,
+                (-rank * 2) + file
+            ]
+        },
+
+        "Pawn": {
+            distance: 1,
+
+            offsets: [
+                 rank,
+                -rank
+            ],
+
+            captures: [
+                 rank + file,
+                -rank + file
+            ]
+        }
+    };
+
+    return Movement;
 });

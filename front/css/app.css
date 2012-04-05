@@ -9,4 +9,10 @@ body {
     -webkit-box-shadow: 3px 3px 25px 8px #ddd;
     box-shadow:         3px 3px 25px 8px #ddd;
     background-image: url('../img/board.png');
+    display:block;
 }
+
+#move{
+    margin-top:24px;
+}
+#move input {margin-left:0}

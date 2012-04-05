@@ -1,5 +1,7 @@
 /*
-    Representation (10 x 12 Single Dimensional Indexed Array)
+    Representation
+    10 x 12
+    Single Dimensional Indexed Array
 
     # # # # # # # # # #   # : illegal
     # # # # # # # # # #   - : open
@@ -16,99 +18,138 @@
 */
 define(function (require) {
     var Piece       = require("piece/piece"),
-        map         = require("board/map"),
-        map_invert  = require("board/map_invert"),
+        _           = require("underscore"),
+        config      = require("board/config"),
         illegal     = require("board/illegal"),
-        initWhite   = require("data/white"),
-        initBlack   = require("data/black"),
+        pieces      = require("board/pieces"),
         movement    = require("piece/movement");
-
-    // Board representation
-    var pieces = new Array(120);
-
-    // Helpers
-    function toCode(index) {
-        return map[index];
-    }
-
-    function toIndex(code) {
-        return map_invert[code];
-    }
 
     // Board
     var Board = {
-        width: 10,
-        height: 12,
-
         init: function () {
-            this.setup(initWhite, "white");
-            this.setup(initBlack, "black");
+
         },
 
-        setup: function (map, color) {
-            var i;
-            for (i in map) {
-                this.add(map[i], color, i);
-            }
+        getWidth: function () {
+            return config.width;
+        },
+
+        getHeight: function () {
+            return config.height;
         },
 
         all: function () {
-            return pieces;
+            return _.compact(pieces);
         },
 
-        add: function (type, color, code) {
-            this.append(new Piece(
-                type,
-                color,
-                toIndex(code)
-            ), toIndex(code));
+        add: function (type, color, index) {
+            this.append(new Piece(type, color, index));
         },
 
-        append: function (piece, index) {
-            pieces[index] = piece;
+        move: function (from, to) {
+
+            // Contents of cell
+            var piece = this.find(from),
+                offsets = movement[piece.type].offsets,
+                distance = movement[piece.type].distance;
+
+            // Piece found
+            if (piece) {
+                var legal = this.legal(piece, offsets, distance);
+
+                // Valid move
+                if (_.contains(legal, to)) {
+
+                    // Remove origin
+                    this.remove(from);
+
+                    // Remove destination (might contain enemy)
+                    this.remove(to);
+
+                    // Change position
+                    piece.setPosition(to);
+
+                    // Append back into the board
+                    this.append(piece);
+
+                    // Move successful
+                    return true;
+                }
+            }
+
+            // Move failed
+            return false;
+        },
+
+        remove: function (index) {
+            pieces[index] = undefined;
+        },
+
+        append: function (piece) {
+            pieces[piece.position] = piece;
+        },
+
+        occupied: function (index, color) {
+            var found = this.find(index);
+
+            if (typeof found === 'undefined') {
+                return false;
+            } else if (typeof color === 'string') {
+                if (color === found.color) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
         },
 
         find: function (index) {
-            return pieces[index];
+            return pieces[index] || false;
         },
 
-        legal: function (piece) {
-            var offsets     = movement[piece.type].offsets,
-                distance    = movement[piece.type].distance,
-                origin      = piece.position,
-                threatens   = [],
-                potential   = [],
-                current, i, j;
+        legal: function (piece, offsets, distance) {
+            var valid = [], current, i = 0;
 
-            // Loop through each offsets
-            for (i = 0; i < offsets.length; i += 1) {
+            // Loop through each offset
+            _.each(offsets, function (offset) {
 
-                // Reset current pointer
-                current = origin + offsets[i];
+                // Reset current
+                current = piece.position + offset;
 
                 // Repeat offset (Infinity or 1)
-                for (j = 0; j < distance; j += 1) {
-                    var found = this.find(current);
+                while (i < distance) {
 
-                    // Is illegal move
-                    if (_.include(illegal, current)) {
+                    // Illegal
+                    if (_.contains(illegal, current)) {
                         break;
                     }
 
-                    // Enemy index
-                    if (typeof found !== 'undefined') {
-                        if (found.color == piece.enemy()) {
-                            threatens.push(current);
+                    // Occupied
+                    else if (this.occupied(current)) {
+
+                        // Enemy occupied
+                        if (this.occupied(current, piece.enemy())) {
+                            valid.push(current);
                         }
+
+                        break;
+
+                    // Unoccupied
+                    } else {
+                        valid.push(current);
                     }
 
-                    // Empty index
-                    if (typeof found === 'undefined') {
+                    // Increment offset pattern
+                    current += offset;
 
-                    }
-
+                    // Distance iteration
+                    i += 1;
                 }
-            }
+            }, this);
+
+            return valid;
         }
     };
 

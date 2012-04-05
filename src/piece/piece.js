@@ -14,6 +14,14 @@ define(function (require) {
             } else {
                 return 'white';
             }
+        },
+
+        getPosition: function () {
+            return this.position;
+        },
+
+        setPosition: function (position) {
+            this.position = position;
         }
     };
 

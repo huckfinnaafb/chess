@@ -1,6 +1,6 @@
 define(function () {
     var Sprite = new Image();
-    Sprite.src = "../img/pieces.png";
+    Sprite.src = "../front/img/pieces.png";
 
     return Sprite;
 });

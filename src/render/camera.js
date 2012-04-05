@@ -3,19 +3,20 @@ define(function (require) {
     var game     = require("game/chess"),
         board    = require("board/board"),
         pieceMap = require("piece/sprite_map"),
-        Graph    = require("graph/graph"),
-        pieces   = board.getPieces();
+        toVec2   = require("utils/toVec2"),
+        pieces   = board.all();
 
-    return {
+    var Camera = {
+        game    : game,
+        board   : board,
         canvas  : undefined,
         ctx     : undefined,
-        fps     : 25,
-        step    : 1 / 25,
+        fps     : 10,
+        step    : 1 / 10,
         frame   : 0,
 
-        init: function (canvasID) {
-            this.canvas = canvasID;
-            this.ctx = document.getElementById(canvasID).getContext('2d');
+        init: function () {
+
         },
 
         getCanvas: function () {
@@ -54,37 +55,49 @@ define(function (require) {
             this.frame = frame;
         },
 
-        update: function (dt) {
-            this.setFrame(this.getFrame() + 1);
-            this.draw(dt);
+        update: function () {
+            this.frame += 1;
+            this.clear(this.ctx);
+            this.draw(this.ctx, pieces);
         },
 
-        draw: function (dt) {
-            var i;
-            for (i = 0; i < pieces.length; i += 1) {
-                if (typeof pieces[i] === 'undefined') {
-                    continue;
-                }
-
-                this.piece(pieces[i]);
-            }
+        clear: function (context) {
+            context.clearRect(
+                0,
+                0,
+                this.ctx.canvas.width,
+                this.ctx.canvas.height
+            );
         },
 
-        piece: function (piece) {
+        draw: function (context, pieces) {
+
+            // Draw each piece
+            _.each(pieces, function (piece) {
+                this.drawPiece(context, piece);
+            }, this);
+        },
+
+        drawPiece: function (context, piece) {
             pieceMap.draw(
 
                 // Context
-                this.getContext(),
+                context,
 
                 // Piece
                 piece,
 
                 // Vector
-                Graph.toVec2(
+                toVec2(
                     piece.getPosition(),
                     board.getWidth()
                 )
             );
         }
     };
+
+    // Initialize
+    Camera.init();
+
+    return Camera;
 });

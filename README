@@ -6,7 +6,6 @@ Board Representation
 ---------------------------------------------
 
 Built using Javascript and HTML5's Canvas
-https://developer.mozilla.org/en/JavaScript
 
 RequireJS
 http://requirejs.org/
@@ -16,3 +15,4 @@ http://documentcloud.github.com/underscore/
 
 References
 http://www.cis.uab.edu/hyatt/boardrep.html
+https://developer.mozilla.org/en/JavaScript

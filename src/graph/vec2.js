@@ -1,7 +1,3 @@
-/*
-    2D Vector
-*/
-
 define(function () {
 
     function Vec2(x, y) {

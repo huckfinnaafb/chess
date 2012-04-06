@@ -7,7 +7,7 @@ require.config({
     waitSeconds: 15
 });
 
-require(["chess", "render/camera", "utils/loop", "jquery"],
+require(["chess", "render/canvas", "utils/loop", "jquery"],
 function (Chess, Camera, loop, $) {
 
     Camera.setCanvas("chess");

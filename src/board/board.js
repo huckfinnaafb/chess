@@ -21,11 +21,11 @@ define(function (require) {
         _           = require("underscore"),
         config      = require("board/config"),
         illegal     = require("board/illegal"),
-        pieces      = require("board/pieces"),
         movement    = require("piece/movement");
 
     // Board
     var Board = {
+        pieces: [],
 
         // Fetch height
         height: function () {
@@ -39,14 +39,13 @@ define(function (require) {
 
         // Fetch all pieces [ that match criteria ]
         all: function (iterator) {
-            return _.compact(pieces, iterator || null);
+            return _.compact(this.pieces, iterator || null);
         },
 
         // Fetch node by index
         fetch: function (index) {
-            return pieces[index] || false;
+            return this.pieces[index] || false;
         },
-
 
         // Create new piece and append to board
         create: function (type, color, index) {
@@ -55,11 +54,11 @@ define(function (require) {
 
         // Append piece to board
         append: function (piece, index) {
-            pieces[index] = piece;
+            this.pieces[index] = piece;
         },
 
         remove: function (index) {
-            pieces[index] = undefined;
+            this.pieces[index] = undefined;
         },
 
         // Move
@@ -68,9 +67,17 @@ define(function (require) {
 
             // Piece found
             if (piece) {
-                var offsets     = movement[piece.type].offsets,
-                    distance    = movement[piece.type].distance,
-                    legal = this.legal(piece.position, offsets, distance);
+                var offsets = movement[piece.type].offsets,
+                    distance = movement[piece.type].distance;
+
+                // Forward Pawn movement
+                if (piece.type === 'Pawn') {
+                    offsets = _.filter(offsets, function (offset) {
+                        return piece.color === 'white' ? offset < 0 : offset > 0;
+                    });
+                }
+
+                var legal = this.legal(piece.position, offsets, distance);
 
                 // Valid move
                 if (_.contains(legal, to)) {

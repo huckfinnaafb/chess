@@ -1,4 +1,4 @@
-define(function (require) {
+define(function () {
     function Piece(type, color, position) {
         this.color = color;
         this.position = position;

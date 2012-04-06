@@ -7,17 +7,13 @@ require.config({
     waitSeconds: 15
 });
 
-require(["game/chess", "render/camera", "utils/loop", "utils/relMouseCoords", "jquery", "piece/movement"],
-function (Chess, Camera, loop, relMouseCoords, $, movement) {
+require(["chess", "render/camera", "utils/loop", "jquery"],
+function (Chess, Camera, loop, $) {
 
     Camera.setCanvas("chess");
     Camera.setContext(document.getElementById("chess").getContext('2d'));
 
     loop(Chess, Camera);
-
-    window.Chess = Chess;
-    window.Camera = Camera;
-    window.movement = movement;
 
     $("#move").submit(function (event) {
         event.preventDefault();

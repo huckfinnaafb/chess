@@ -26,53 +26,59 @@ define(function (require) {
 
     // Board
     var Board = {
-        init: function () {
 
-        },
-
-        getWidth: function () {
-            return config.width;
-        },
-
-        getHeight: function () {
+        // Fetch height
+        height: function () {
             return config.height;
         },
 
-        all: function () {
-            return _.compact(pieces);
+        // Fetch width
+        width: function () {
+            return config.width;
         },
 
-        add: function (type, color, index) {
-            this.append(new Piece(type, color, index));
+        // Fetch all pieces [ that match criteria ]
+        all: function (iterator) {
+            return _.compact(pieces, iterator || null);
         },
 
+        // Fetch node by index
+        fetch: function (index) {
+            return pieces[index] || false;
+        },
+
+
+        // Create new piece and append to board
+        create: function (type, color, index) {
+            this.append(new Piece(type, color, index), index);
+        },
+
+        // Append piece to board
+        append: function (piece, index) {
+            pieces[index] = piece;
+        },
+
+        remove: function (index) {
+            pieces[index] = undefined;
+        },
+
+        // Move
         move: function (from, to) {
-
-            // Contents of cell
-            var piece = this.find(from),
-                offsets = movement[piece.type].offsets,
-                distance = movement[piece.type].distance;
+            var piece = this.fetch(from);
 
             // Piece found
             if (piece) {
-                var legal = this.legal(piece, offsets, distance);
+                var offsets     = movement[piece.type].offsets,
+                    distance    = movement[piece.type].distance,
+                    legal = this.legal(piece.position, offsets, distance);
 
                 // Valid move
                 if (_.contains(legal, to)) {
-
-                    // Remove origin
                     this.remove(from);
-
-                    // Remove destination (might contain enemy)
                     this.remove(to);
-
-                    // Change position
                     piece.setPosition(to);
+                    this.append(piece, to);
 
-                    // Append back into the board
-                    this.append(piece);
-
-                    // Move successful
                     return true;
                 }
             }
@@ -81,45 +87,32 @@ define(function (require) {
             return false;
         },
 
-        remove: function (index) {
-            pieces[index] = undefined;
+        // Capture
+        capture: function () {
+
         },
 
-        append: function (piece) {
-            pieces[piece.position] = piece;
-        },
-
-        occupied: function (index, color) {
-            var found = this.find(index);
-
-            if (typeof found === 'undefined') {
-                return false;
-            } else if (typeof color === 'string') {
-                if (color === found.color) {
-                    return true;
-                }
-
-                return false;
-            }
-
-            return false;
-        },
-
-        find: function (index) {
-            return pieces[index] || false;
-        },
-
-        legal: function (piece, offsets, distance) {
-            var valid = [], current, i = 0;
+        /*
+            Retrieve all legal moves
+                @return array
+                @param index int
+                @param offsets array
+                @param distance int
+        */
+        legal: function (index, offsets, iterations) {
+            var current, distance,
+                piece = this.fetch(index),
+                valid = [];
 
             // Loop through each offset
             _.each(offsets, function (offset) {
 
-                // Reset current
-                current = piece.position + offset;
+                // Reset
+                current = index + offset;
+                distance = 0;
 
                 // Repeat offset (Infinity or 1)
-                while (i < distance) {
+                while (distance < iterations) {
 
                     // Illegal
                     if (_.contains(illegal, current)) {
@@ -127,11 +120,13 @@ define(function (require) {
                     }
 
                     // Occupied
-                    else if (this.occupied(current)) {
+                    else if (this.isOccupied(current)) {
+                        if (piece) {
 
-                        // Enemy occupied
-                        if (this.occupied(current, piece.enemy())) {
-                            valid.push(current);
+                            // Enemy occupied
+                            if (this.isOccupied(current, piece.enemy())) {
+                                valid.push(current);
+                            }
                         }
 
                         break;
@@ -142,19 +137,40 @@ define(function (require) {
                     }
 
                     // Increment offset pattern
-                    current += offset;
+                    current = current + offset;
 
-                    // Distance iteration
-                    i += 1;
+                    // Increment distance
+                    distance += 1;
                 }
             }, this);
 
             return valid;
+        },
+
+        /*
+            Determines if a node is occupied by a piece
+                @return bool
+                @param index int
+                @param color string
+        */
+        isOccupied: function (index, color) {
+            var match = this.fetch(index);
+
+            if (match) {
+                if (color) {
+                    if (match.color === color) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
         }
     };
-
-    // Initialize
-    Board.init();
 
     return Board;
 });

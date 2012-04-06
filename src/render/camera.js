@@ -1,6 +1,6 @@
 define(function (require) {
 
-    var game     = require("game/chess"),
+    var game     = require("chess"),
         board    = require("board/board"),
         pieceMap = require("piece/sprite_map"),
         toVec2   = require("utils/toVec2"),
@@ -90,7 +90,7 @@ define(function (require) {
                 // Vector
                 toVec2(
                     piece.getPosition(),
-                    board.getWidth()
+                    board.width()
                 )
             );
         }

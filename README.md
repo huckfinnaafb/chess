@@ -1,11 +1,13 @@
-It's Chess. Deal with it.
+Chess
+=====
 
 Board Representation
+--------------------
+
 10x12 Single Dimensionsal Indexed Array
 
----------------------------------------------
-
 Built using Javascript and HTML5's Canvas
+-----------------------------------------
 
 RequireJS
 http://requirejs.org/

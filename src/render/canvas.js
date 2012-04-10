@@ -1,14 +1,12 @@
 define(function (require) {
 
-    var game     = require("chess"),
-        board    = require("board/board"),
+    var chess     = require("chess"),
         pieceMap = require("piece/sprite_map"),
         toVec2   = require("utils/toVec2"),
-        pieces   = board.all();
+        _ = require("underscore");
 
     var Camera = {
-        game    : game,
-        board   : board,
+        game    : chess,
         canvas  : undefined,
         ctx     : undefined,
         fps     : 10,
@@ -58,7 +56,7 @@ define(function (require) {
         update: function () {
             this.frame += 1;
             this.clear(this.ctx);
-            this.draw(this.ctx, pieces);
+            this.draw(this.ctx, chess);
         },
 
         clear: function (context) {
@@ -70,15 +68,22 @@ define(function (require) {
             );
         },
 
-        draw: function (context, pieces) {
+        // Master draw
+        draw: function (context, game) {
+            this.board(context, game.board);
+        },
 
-            // Draw each piece
-            _.each(pieces, function (piece) {
-                this.drawPiece(context, piece);
+        // Draw board state
+        board: function (context, board) {
+
+            // Draw all pieces
+            _.each(board.all(), function (piece) {
+                this.piece(context, board, piece);
             }, this);
         },
 
-        drawPiece: function (context, piece) {
+        // Single piece draw
+        piece: function (context, board, piece) {
             pieceMap.draw(
 
                 // Context
@@ -90,7 +95,7 @@ define(function (require) {
                 // Vector
                 toVec2(
                     piece.getPosition(),
-                    board.width()
+                    board.getWidth()
                 )
             );
         }

@@ -18,11 +18,12 @@ define(function (require) {
     }
 
     var Chess = {
-        turn    : "white",
-        round   : 0,
-        fps     : 10,
-        step    : 1 / 10,
-        frame   : 0,
+        board: Board,
+        turn: "white",
+        round: 0,
+        fps: 10,
+        step: 1 / 10,
+        frame: 0,
 
         // Clear
         clear: function () {
@@ -41,7 +42,13 @@ define(function (require) {
 
         // Toggle turn
         toggle: function () {
+            if (this.getTurn() === "white") {
+                this.setTurn("black");
+            } else {
+                this.setTurn("white");
+            }
 
+            this.round += 1;
         },
 
         // Move

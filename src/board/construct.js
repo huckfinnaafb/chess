@@ -67,7 +67,13 @@ define(function (require) {
             this.pieces[index] = undefined;
         },
 
-        // Move
+        /*
+            Move
+            @param from int
+            @param to int
+
+            @return bool
+        */
         move: function (from, to) {
             var piece,
                 occupying,
@@ -89,7 +95,6 @@ define(function (require) {
 
                 // Pawn - Forward movement hacks
                 if (piece.getType() === "Pawn") {
-
                     offsets = _.filter(offsets, function (offset) {
                         if (piece.color == 'white') {
                             return offset < 0;
@@ -151,10 +156,11 @@ define(function (require) {
 
         /*
             Retrieve all legal moves
-                @return array
-                @param index int
-                @param offsets array
-                @param distance int
+            @param index int
+            @param offsets array
+            @param distance int
+
+            @return array
         */
         legal: function (index, offsets, iterations) {
             var current, distance,
@@ -203,9 +209,10 @@ define(function (require) {
 
         /*
             Determines if a node is occupied by a piece
-                @return bool
-                @param index int
-                @param color string
+            @param index int
+            @param color string
+
+            @return bool
         */
         isOccupied: function (index, match) {
             var found = this.fetch(index);

@@ -1,5 +1,5 @@
-define(["board/config"], function (config) {
-    var rank = config.width,
+define(function () {
+    var rank = 10,
         file = 1;
 
     var Movement = {
